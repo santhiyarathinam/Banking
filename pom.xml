@@ -46,7 +46,7 @@
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <mainClass>org.com.BankingApplication</mainClass>
+                            <mainClass>org.com.banking.BankingApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
