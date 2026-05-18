@@ -1,5 +1,21 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  IMAGE_NAME: $CI_REGISTRY_IMAGE/banking-app
+
+build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-17
+  script:
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+
 docker-build:
-  stage: dockerize
+  stage: deploy
   image: docker:24
   services:
     - docker:dind
@@ -7,13 +23,7 @@ docker-build:
     DOCKER_TLS_CERTDIR: ""
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-
-    # Build once with SHA tag
     - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA .
-
-    # Tag same image as latest
     - docker tag $IMAGE_NAME:$CI_COMMIT_SHORT_SHA $IMAGE_NAME:latest
-
-    # Push both
     - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     - docker push $IMAGE_NAME:latest
